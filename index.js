@@ -9,6 +9,7 @@ const port = 3000;
 // app.use(express.static("public"));
 app.use(express.json());
 
+//Get all movies
 app.get("/v1/movies", (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -29,8 +30,13 @@ app.get("/v1/movies", (req, res) => {
   }
 });
 
+//Get movies by ID
 app.get("/v1/movies/:id", (req, res) => {
-  const requestedId = +req.params.id;
+  const requestedId = parseInt(req.params.id);
+  if (isNaN(requestedId)) {
+    res.status(400).json({ status: "Error", message: `Invalid movie ID.` });
+    return;
+  }
 
   const movie = movies.find((movie) => movie.id === requestedId);
   console.log(movie);
@@ -46,6 +52,7 @@ app.get("/v1/movies/:id", (req, res) => {
   }
 });
 
+//Post new movies
 app.post("/v1/movies", (req, res) => {
   const newId = movies[movies.length - 1].id + 1;
   const newMovie = {
@@ -72,6 +79,40 @@ app.post("/v1/movies", (req, res) => {
     }
     res.status(200).json({ status: "Succesful", data: newMovie });
   });
+});
+
+//Update Movies
+app.patch("/v1/movies/:id", (req, res) => {
+  const requestedId = parseInt(req.params.id);
+  if (isNaN(requestedId)) {
+    res.status(400).json({ status: "Error", message: "Invalid movie ID." });
+    return;
+  }
+
+  const findMovie = movies.find((movie) => movie.id === requestedId);
+  if (!findMovie) {
+    res.status(404).json({
+      status: "Error",
+      message: `Movie with the id ${requestedId} not found.`,
+    });
+    return;
+  } else {
+    const updatedMovie = { ...findMovie, ...req.body };
+    const index = movies.indexOf(findMovie);
+
+    movies[index] = updatedMovie;
+    writeFile("data/movies.json", JSON.stringify(movies), (error) => {
+      if (error) {
+        res
+          .status(500)
+          .json({ status: "Failed", message: "Internal Serval error" });
+        return;
+      }
+      res
+        .status(200)
+        .json({ status: "Successfully Updated", data: updatedMovie });
+    });
+  }
 });
 
 app.listen(port, () => {

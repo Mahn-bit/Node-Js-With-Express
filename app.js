@@ -2,9 +2,17 @@ const { readFileSync } = require("fs");
 
 const movies = JSON.parse(readFileSync("data/movies.json", "utf-8"));
 
-const count = movies.map((movie) => movie.id);
-const newId = movies[movies.length - 1].id;
+const movieId = {
+  id: 1,
+  name: "Inception",
+  release_year: 2010,
+  duration: 148,
+  genre: ["Action", "Adventure", "Sci-Fi"],
+};
 
-const countLength = count[count.length - 1];
+const findMovies = movies.find((movie) => movie.id === movieId.id);
 
-console.log(newId);
+const index = movies.indexOf(findMovies);
+
+console.log(index);
+console.log(movies);
