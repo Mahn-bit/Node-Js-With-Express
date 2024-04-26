@@ -29,6 +29,23 @@ app.get("/v1/movies", (req, res) => {
   }
 });
 
+app.get("/v1/movies/:id", (req, res) => {
+  const requestedId = +req.params.id;
+
+  const movie = movies.find((movie) => movie.id === requestedId);
+  console.log(movie);
+
+  if (!movie) {
+    res.status(404).json({
+      status: "Error",
+      message: `Movie with id ${requestedId} not found`,
+    });
+    return;
+  } else {
+    res.status(200).json({ status: "Successful", data: movie });
+  }
+});
+
 app.post("/v1/movies", (req, res) => {
   const newId = movies[movies.length - 1].id + 1;
   const newMovie = {
