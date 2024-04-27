@@ -99,20 +99,77 @@ app.patch("/v1/movies/:id", (req, res) => {
   } else {
     const updatedMovie = { ...findMovie, ...req.body };
     const index = movies.indexOf(findMovie);
-
+    console.log(index);
     movies[index] = updatedMovie;
     writeFile("data/movies.json", JSON.stringify(movies), (error) => {
       if (error) {
         res
           .status(500)
           .json({ status: "Failed", message: "Internal Serval error" });
-        return;
       }
       res
         .status(200)
         .json({ status: "Successfully Updated", data: updatedMovie });
     });
   }
+});
+
+// //Delete movie
+// app.delete("/v1/movies/:id", (req, res) => {
+//   const requestedId = parseInt(req.params.id);
+//   if (isNaN(requestedId)) {
+//     res.status(400).json({ status: "Error", message: "Invalid movie ID." });
+//     return;
+//   }
+
+//   const deletedMovies = movies.find((movie) => movie.id === requestedId);
+//   if (!deletedMovies) {
+//     res.status(404).json({ status: "Error", message: "Movie not found." });
+//     return;
+//   }
+
+//   const updatedMovies = movies.filter((movie) => movie.id !== requestedId);
+
+//   updatedMovies.forEach((movie) => {
+//     if (movie.id > requestedId) {
+//       return (movie.id = movie.id - 1);
+//     }
+//   });
+
+//   writeFile("data/movies.json", JSON.stringify(updatedMovies), (error) => {
+//     if (error) {
+//       res
+//         .status(500)
+//         .json({ status: "Failed", message: "Internal Server Error." });
+//       return;
+//     }
+
+//     res.status(200).json({ status: "Successful", message: { deletedMovies } });
+//   });
+// });
+
+//Delete unwanted movies
+app.delete("/v1/movies/:id", (req, res) => {
+  const requestedId = parseInt(req.params.id);
+  if (requestedId === -1) {
+    res.status(400).json({ status: "Error", maeesage: "Invalid movie ID." });
+  }
+  const findMovie = movies.find((movie) => movie.id === requestedId);
+  let updatedMovies = movies.filter((movie) => movie.id !== requestedId);
+  updatedMovies.forEach((movie) => {
+    if (movie.id > requestedId) {
+      movie.id--;
+    }
+  });
+
+  writeFile("data/movies.json", JSON.stringify(updatedMovies), (error) => {
+    if (error) {
+      res
+        .status(500)
+        .json({ status: "Failed", message: "Internal server Error." });
+    }
+    res.status(200).json({ status: 200, data: findMovie });
+  });
 });
 
 app.listen(port, () => {

@@ -1,18 +1,21 @@
-const { readFileSync } = require("fs");
+const { readFileSync, writeFileSync } = require("fs");
 
 const movies = JSON.parse(readFileSync("data/movies.json", "utf-8"));
 
-const movieId = {
-  id: 1,
-  name: "Inception",
-  release_year: 2010,
-  duration: 148,
-  genre: ["Action", "Adventure", "Sci-Fi"],
-};
+const findMovie = movies.find((movie) => movie.id === 7);
 
-const findMovies = movies.find((movie) => movie.id === movieId.id);
+const index = movies.findIndex((movie) => movie.id === findMovie.id);
 
-const index = movies.indexOf(findMovies);
+let count = 1;
+movies.forEach((movie) => {
+  movie.id = count;
+  count++;
+});
 
-console.log(index);
+writeFileSync("data/movies.json", JSON.stringify(movies), (error) => {
+  if (error) {
+    console.error("Internal Server error");
+  }
+  
+});
 console.log(movies);
