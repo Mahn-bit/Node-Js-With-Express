@@ -26,6 +26,18 @@ app.get("/v1/movies", (req, res) => {
         .status(200)
         .json({ status: "Successful", count: movies.length, data: filteredMovies });
 });
+//Get movie with id
+app.get("/v1/movies/:id", (req, res) => {
+    const parseId = parseInt(req.params.id);
+    if (isNaN(parseId)) {
+        res.status(400).json({ status: "Fail", message: `Invaid movie id` });
+    }
+    const foundMovieIndex = movies.findIndex((movie) => movie.id === parseId);
+    if (foundMovieIndex === -1) {
+        res.status(404).json({ status: 'Failed', message:  });
+    }
+    const movie = movies[foundMovieIndex];
+});
 app.post("/v1/movies", (req, res) => {
     const newId = movies[movies.length - 1].id + 1;
     const newMovie = {
@@ -89,7 +101,6 @@ app.delete("/v1/movies/:id", (req, res) => {
             movie.id = index + 1;
         }
     });
-    console.log(filteredMovies);
     movies.splice(0, movies.length, ...filteredMovies);
     (0, fs_1.writeFile)("data/movies.json", JSON.stringify(movies), (error) => {
         if (error) {

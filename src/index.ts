@@ -1,5 +1,5 @@
 import express, { Express, json, Request, Response } from "express";
-import dotenv from "dotenv";
+import dotenv, from "dotenv";
 import { readFileSync, writeFile } from "fs";
 
 dotenv.config();
@@ -31,8 +31,32 @@ app.get("/v1/movies", (req, res) => {
     .json({ status: "Successful", count: movies.length, data: filteredMovies });
 });
 
+//Get movie with id
+app.get("/v1/movies/:id", (req, res) => {
+  const movieId: number = Number(req.params.id);
+  if (isNaN(movieId)) {
+    res.status(400).json({ status: "Fail", message: `Invaid movie id.` });
+  }
+  const foundMovieIndex = movies.findIndex(
+    (movie: { id: number }) => movie.id === movieId
+  );
+
+  if (foundMovieIndex === -1) {
+    res.status(404).json({
+      status: "Failed",
+      message: `Movie with id: ${movieId} not found.`,
+    });
+  }
+
+  const movie = movies[foundMovieIndex];
+
+  res.status(200).json({ status: `Succesful`, data: movie });
+});
+
+
+//Create new movie
 app.post("/v1/movies", (req, res) => {
-  const newId = movies[movies.length - 1].id + 1;
+  const newId: number = movies[movies.length - 1].id + 1;
 
   const newMovie = {
     id: newId,
@@ -67,19 +91,21 @@ app.post("/v1/movies", (req, res) => {
   });
 });
 
+
+//Update movie by id
 app.patch("/v1/movies/:id", (req, res) => {
-  const parseId = parseInt(req.params.id);
-  if (isNaN(parseId)) {
+  const movieId: number = Number(req.params.id);
+  if (isNaN(movieId)) {
     res.status(400).json({ status: "Failed", message: `Invalid movie id` });
   }
   const foundMovieIndex = movies.findIndex(
-    (movie: { id: number }) => movie.id === parseId
+    (movie: { id: number }) => movie.id === movieId
   );
 
   if (foundMovieIndex === -1) {
     res.status(404).json({
       status: `Failed`,
-      message: `Movies with ID: ${parseId} not found`,
+      message: `Movies with ID: ${movieId} not found`,
     });
   }
   const updatedMovie = {
@@ -101,17 +127,15 @@ app.patch("/v1/movies/:id", (req, res) => {
 });
 
 app.delete("/v1/movies/:id", (req, res) => {
-  const parseId: number = Number(req.params.id);
+  const movieId: number = Number(req.params.id);
   const filteredMovies = movies.filter(
-    (movie: { id: number }) => movie.id !== parseId
+    (movie: { id: number }) => movie.id !== movieId
   );
   filteredMovies.forEach((movie: { id: number }, index: number) => {
-    if (movie.id > parseId) {
+    if (movie.id > movieId) {
       movie.id = index + 1;
     }
   });
-
-  console.log(filteredMovies);
 
   movies.splice(0, movies.length, ...filteredMovies);
 
