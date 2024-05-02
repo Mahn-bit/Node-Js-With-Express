@@ -31,26 +31,26 @@ app.get("/v1/movies", (req, res) => {
 });
 
 //Get movies by ID
-app.get("/v1/movies/:id", (req, res) => {
-  const requestedId = parseInt(req.params.id);
-  if (isNaN(requestedId)) {
-    res.status(400).json({ status: "Error", message: `Invalid movie ID.` });
-    return;
-  }
+// app.get("/v1/movies/:id", (req, res) => {
+//   const requestedId = parseInt(req.params.id);
+//   if (isNaN(requestedId)) {
+//     res.status(400).json({ status: "Error", message: `Invalid movie ID.` });
+//     return;
+//   }
 
-  const movie = movies.find((movie) => movie.id === requestedId);
-  console.log(movie);
+//   const movie = movies.find((movie) => movie.id === requestedId);
+//   console.log(movie);
 
-  if (!movie) {
-    res.status(404).json({
-      status: "Error",
-      message: `Movie with id ${requestedId} not found`,
-    });
-    return;
-  } else {
-    res.status(200).json({ status: "Successful", data: movie });
-  }
-});
+//   if (!movie) {
+//     res.status(404).json({
+//       status: "Error",
+//       message: `Movie with id ${requestedId} not found`,
+//     });
+//     return;
+//   } else {
+//     res.status(200).json({ status: "Successful", data: movie });
+//   }
+// });
 
 //Post new movies
 app.post("/v1/movies", (req, res) => {
@@ -59,7 +59,6 @@ app.post("/v1/movies", (req, res) => {
     id: newId,
     ...req.body,
   };
-  console.log(newMovie);
   const requiredProps = ["id", "name", "release_year", "duration", "genre"];
   const missingProps = requiredProps.filter((props) => !(props in newMovie));
   if (missingProps.length > 0) {
@@ -98,7 +97,7 @@ app.patch("/v1/movies/:id", (req, res) => {
     return;
   } else {
     const updatedMovie = { ...findMovie, ...req.body };
-    const index = movies.indexOf(findMovie);
+    const index = movies.findIndex((movie) => movie.index === findMovie.id);
     console.log(index);
     movies[index] = updatedMovie;
     writeFile("data/movies.json", JSON.stringify(movies), (error) => {
@@ -114,40 +113,6 @@ app.patch("/v1/movies/:id", (req, res) => {
   }
 });
 
-// //Delete movie
-// app.delete("/v1/movies/:id", (req, res) => {
-//   const requestedId = parseInt(req.params.id);
-//   if (isNaN(requestedId)) {
-//     res.status(400).json({ status: "Error", message: "Invalid movie ID." });
-//     return;
-//   }
-
-//   const deletedMovies = movies.find((movie) => movie.id === requestedId);
-//   if (!deletedMovies) {
-//     res.status(404).json({ status: "Error", message: "Movie not found." });
-//     return;
-//   }
-
-//   const updatedMovies = movies.filter((movie) => movie.id !== requestedId);
-
-//   updatedMovies.forEach((movie) => {
-//     if (movie.id > requestedId) {
-//       return (movie.id = movie.id - 1);
-//     }
-//   });
-
-//   writeFile("data/movies.json", JSON.stringify(updatedMovies), (error) => {
-//     if (error) {
-//       res
-//         .status(500)
-//         .json({ status: "Failed", message: "Internal Server Error." });
-//       return;
-//     }
-
-//     res.status(200).json({ status: "Successful", message: { deletedMovies } });
-//   });
-// });
-
 //Delete unwanted movies
 app.delete("/v1/movies/:id", (req, res) => {
   const requestedId = parseInt(req.params.id);
@@ -156,9 +121,9 @@ app.delete("/v1/movies/:id", (req, res) => {
   }
   const findMovie = movies.find((movie) => movie.id === requestedId);
   let updatedMovies = movies.filter((movie) => movie.id !== requestedId);
-  updatedMovies.forEach((movie) => {
+  updatedMovies.forEach((movie, index) => {
     if (movie.id > requestedId) {
-      movie.id--;
+      movie.id = index + 1;
     }
   });
 
@@ -170,6 +135,22 @@ app.delete("/v1/movies/:id", (req, res) => {
     }
     res.status(200).json({ status: 200, data: findMovie });
   });
+});
+
+//Search movies by genre
+app.get("/v1/movies/:movieGenre", (req, res) => {
+  const getMovieGenre = req.params.movieGenre;
+  if (getMovieGenre.length === 1) {
+    res.status(400).json({
+      status: "Failed",
+      message: "No movie found with the requested genre.",
+    });
+  }
+  const findMovies = movies.filter((movie) =>
+    movie.genre.includes(getMovieGenre)
+  );
+
+  res.send("Tesing api");
 });
 
 app.listen(port, () => {

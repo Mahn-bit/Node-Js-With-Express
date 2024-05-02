@@ -1,1 +1,128 @@
-[{"id":1,"name":"Inception","release_year":2010,"duration":148,"genre":["Action","Adventure","Sci-Fi"]},{"id":2,"name":"The Shawshank Redemption","release_year":1994,"duration":142,"genre":["Drama"]},{"id":3,"name":"The Godfather","release_year":1972,"duration":175,"genre":["Crime","Drama"]},{"id":4,"name":"The Dark Knight","release_year":2008,"duration":152,"genre":["Action","Crime","Drama"]},{"id":5,"name":"Pulp Fiction","release_year":1994,"duration":154,"genre":["Crime","Drama"]},{"id":6,"name":"Forrest Gump","release_year":1994,"duration":142,"genre":["Drama","Romance"]},{"id":7,"name":"Goodfellas","release_year":1990,"duration":146,"genre":["Biography","Crime","Drama"]},{"id":8,"name":"The Silence of the Lambs","release_year":1991,"duration":118,"genre":["Crime","Drama","Thriller"]},{"id":9,"name":"Inglourious Basterds","release_year":2009,"duration":153,"genre":["Adventure","Drama","War"]},{"id":10,"name":"The Departed","release_year":2006,"duration":151,"genre":["Crime","Drama","Thriller"]},{"id":11,"name":"Gladiator","release_year":2000,"duration":155,"genre":["Action","Adventure","Drama"]},{"id":12,"name":"The Green Mile","release_year":1999,"duration":189,"genre":["Crime","Drama","Fantasy"]},{"id":13,"name":"The Lion King","release_year":1994,"duration":88,"genre":["Animation","Adventure","Drama"]},{"id":14,"name":"The Sixth Sense","release_year":1999,"duration":107,"genre":["Drama","Mystery","Thriller"]},{"id":15,"name":"Saving Private Ryan","release_year":1998,"duration":169,"genre":["Drama","War"]},{"id":16,"name":"Rebel Moon - Part One: A Child of Fire","release_year":2023,"duration":135,"genre":["Action","Drama","Fantasy","Sci-fi","Adventure"]},{"id":17,"name":"Schindler's List","release_year":1993,"duration":195,"genre":["Biography","Drama","History"]},{"id":18,"name":"Love Lies Bleeding","release_year":2024,"duration":103,"genre":["Action","Adventure","Crime","Mystery","Romance","Thriller"]},{"id":19,"name":"Monkey Man","release_year":2024,"duration":121,"genre":["Action","Thriller"]}]
+[
+  {
+    "id": 1,
+    "name": "Inception",
+    "release_year": 2010,
+    "duration": 148,
+    "genre": ["Action", "Adventure", "Sci-Fi"]
+  },
+  {
+    "id": 2,
+    "name": "The Shawshank Redemption",
+    "release_year": 1994,
+    "duration": 142,
+    "genre": ["Drama"]
+  },
+  {
+    "id": 2,
+    "name": "Yodha",
+    "release_year": 2024,
+    "duration": 130,
+    "genre": ["Action", "Thriller", "Drama"]
+  },
+  {
+    "id": 4,
+    "name": "The Dark Knight",
+    "release_year": 2008,
+    "duration": 152,
+    "genre": ["Action", "Crime", "Drama"]
+  },
+  {
+    "id": 5,
+    "name": "Pulp Fiction",
+    "release_year": 1994,
+    "duration": 154,
+    "genre": ["Crime", "Drama"]
+  },
+  {
+    "id": 6,
+    "name": "Forrest Gump",
+    "release_year": 1994,
+    "duration": 142,
+    "genre": ["Drama", "Romance"]
+  },
+  {
+    "id": 7,
+    "name": "The Silence of the Lambs",
+    "release_year": 1991,
+    "duration": 118,
+    "genre": ["Crime", "Drama", "Thriller"]
+  },
+  {
+    "id": 7,
+    "name": "Happy Death Day",
+    "release_year": 2017,
+    "duration": 121,
+    "genre": ["Action", "Thriller", "Horror", "Mystery", "Comedy"]
+  },
+  {
+    "id": 9,
+    "name": "The Departed",
+    "release_year": 2006,
+    "duration": 151,
+    "genre": ["Crime", "Drama", "Thriller"]
+  },
+  {
+    "id": 10,
+    "name": "Gladiator",
+    "release_year": 2000,
+    "duration": 155,
+    "genre": ["Action", "Adventure", "Drama"]
+  },
+  {
+    "id": 11,
+    "name": "The Green Mile",
+    "release_year": 1999,
+    "duration": 189,
+    "genre": ["Crime", "Drama", "Fantasy"]
+  },
+  {
+    "id": 12,
+    "name": "The Lion King",
+    "release_year": 1994,
+    "duration": 88,
+    "genre": ["Animation", "Adventure", "Drama"]
+  },
+  {
+    "id": 13,
+    "name": "Crakk: Jeetega... Toh Jiyegaa",
+    "release_year": 2024,
+    "duration": 124,
+    "genre": ["Action", "Thriller", "Sport"]
+  },
+  {
+    "id": 14,
+    "name": "Godzilla Minus One",
+    "release_year": 2024,
+    "duration": 124,
+    "genre": ["Action", "Adventure", "Drama", "Horror", "Sci-fi"]
+  },
+  {
+    "id": 15,
+    "name": "Rebel Moon - Part One: A Child of Fire",
+    "release_year": 2023,
+    "duration": 135,
+    "genre": ["Action", "Drama", "Fantasy", "Sci-fi", "Adventure"]
+  },
+  {
+    "id": 16,
+    "name": "Schindler's List",
+    "release_year": 1993,
+    "duration": 195,
+    "genre": ["Biography", "Drama", "History"]
+  },
+  {
+    "id": 17,
+    "name": "Love Lies Bleeding",
+    "release_year": 2024,
+    "duration": 103,
+    "genre": ["Action", "Adventure", "Crime", "Mystery", "Romance", "Thriller"]
+  },
+  {
+    "id": 18,
+    "name": "Monkey Man",
+    "release_year": 2024,
+    "duration": 121,
+    "genre": ["Action", "Thriller"]
+  }
+]
