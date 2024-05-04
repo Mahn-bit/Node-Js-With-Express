@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMovie = exports.updateMovie = exports.createMovie = exports.getMovie = exports.getAllMovies = exports.getStatus = void 0;
+exports.deleteMovie = exports.updateMovie = exports.createMovie = exports.getMovie = exports.getAllMovies = exports.getStatus = exports.checkId = void 0;
 const fs_1 = require("fs");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -13,6 +13,20 @@ if (!moviesFilePath) {
     process.exit(1);
 }
 const movies = JSON.parse((0, fs_1.readFileSync)(moviesFilePath, "utf-8"));
+const checkId = (req, res, next, paramValue) => {
+    const movieId = Number(paramValue);
+    console.log(`Movie ID is ${movieId}`);
+    const movieIndex = movies.findIndex((movie) => movie.id === movieId);
+    if (movieIndex === -1) {
+        res.status(400).json({
+            status: "Failed",
+            message: `Movies with ID: ${movieId} not found`,
+        });
+        return;
+    }
+    next();
+};
+exports.checkId = checkId;
 const getStatus = (req, res) => {
     res.status(200).json({ status: `OK` });
 };
@@ -37,12 +51,6 @@ const getMovie = (req, res) => {
         res.status(400).json({ status: "Fail", message: `Invaid movie id.` });
     }
     const movieIndex = movies.findIndex((movie) => movie.id === movieId);
-    if (movieIndex === -1) {
-        res.status(404).json({
-            status: "Failed",
-            message: `Movie with id: ${movieId} not found.`,
-        });
-    }
     const movie = movies[movieIndex];
     res.status(200).json({ status: `Succesful`, data: movie });
 };
@@ -83,12 +91,6 @@ const updateMovie = (req, res) => {
         res.status(400).json({ status: "Failed", message: `Invalid movie id` });
     }
     const movieIndex = movies.findIndex((movie) => movie.id === movieId);
-    if (movieIndex === -1) {
-        res.status(404).json({
-            status: `Failed`,
-            message: `Movies with ID: ${movieId} not found`,
-        });
-    }
     const updatedMovie = {
         ...movies[movieIndex],
         ...req.body,
@@ -107,10 +109,6 @@ exports.updateMovie = updateMovie;
 const deleteMovie = (req, res) => {
     const movieId = Number(req.params.id);
     const movieIndex = movies.findIndex((movie) => movie.id === movieId);
-    if (movieIndex === -1) {
-        res.status(400).json({ status: "Failed", message: `Invalid movie ID.` });
-        return;
-    }
     const filteredMovies = movies.filter((movie) => movie.id !== movieId);
     movies.splice(0, movies.length, ...filteredMovies);
     (0, fs_1.writeFile)("data/movies.json", JSON.stringify(movies), (error) => {

@@ -7,9 +7,12 @@ import {
   updateMovie,
   deleteMovie,
   getStatus,
+  checkId,
 } from "../controler/movieControler";
 
 const movieRouter = express.Router();
+
+movieRouter.param("id", checkId);
 
 movieRouter.get("/status", getStatus);
 

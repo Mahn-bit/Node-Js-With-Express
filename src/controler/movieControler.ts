@@ -1,11 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { readFileSync, writeFile } from "fs";
 import dotenv from "dotenv";
 
 dotenv.config();
-
-
 
 const moviesFilePath = process.env.MOVIES_FILE_PATH;
 
@@ -17,6 +15,35 @@ if (!moviesFilePath) {
 }
 
 const movies = JSON.parse(readFileSync(moviesFilePath, "utf-8"));
+
+const checkId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  paramValue: number
+) => {
+  const movieId: number = Number(paramValue);
+  console.log(`Movie ID is ${movieId}`);
+
+  if (isNaN(movieId)) {
+    res
+      .status(400)
+      .json({ status: "Failed", message: `Invalid movie id ${paramValue}` });
+    return;
+  }
+  const movieIndex = movies.findIndex(
+    (movie: { id: number }) => movie.id === movieId
+  );
+
+  if (movieIndex === -1) {
+    res.status(404).json({
+      status: "Failed",
+      message: `Movies with id ${movieId} not found`,
+    });
+    return;
+  }
+  next();
+};
 
 const getStatus = (req: Request, res: Response) => {
   res.status(200).json({ status: `OK` });
@@ -43,16 +70,10 @@ const getMovie = (req: Request, res: Response) => {
   if (isNaN(movieId)) {
     res.status(400).json({ status: "Fail", message: `Invaid movie id.` });
   }
+
   const movieIndex = movies.findIndex(
     (movie: { id: number }) => movie.id === movieId
   );
-
-  if (movieIndex === -1) {
-    res.status(404).json({
-      status: "Failed",
-      message: `Movie with id: ${movieId} not found.`,
-    });
-  }
 
   const movie = movies[movieIndex];
 
@@ -104,12 +125,6 @@ const updateMovie = (req: Request, res: Response) => {
     (movie: { id: number }) => movie.id === movieId
   );
 
-  if (movieIndex === -1) {
-    res.status(404).json({
-      status: `Failed`,
-      message: `Movies with ID: ${movieId} not found`,
-    });
-  }
   const updatedMovie = {
     ...movies[movieIndex],
     ...req.body,
@@ -134,10 +149,6 @@ const deleteMovie = (req: Request, res: Response) => {
     (movie: { id: number }) => movie.id === movieId
   );
 
-  if (movieIndex === -1) {
-    res.status(400).json({ status: "Failed", message: `Invalid movie ID.` });
-    return;
-  }
   const filteredMovies = movies.filter(
     (movie: { id: number }) => movie.id !== movieId
   );
@@ -159,6 +170,7 @@ const deleteMovie = (req: Request, res: Response) => {
 };
 
 export {
+  checkId,
   getStatus,
   getAllMovies,
   getMovie,
