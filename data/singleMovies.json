@@ -42,7 +42,14 @@
     "genre": ["Drama", "Romance"]
   },
   {
-    "id": 8,
+    "id": 7,
+    "name": "The Silence of the Lambs",
+    "release_year": 1991,
+    "duration": 118,
+    "genre": ["Crime", "Drama", "Thriller"]
+  },
+  {
+    "id": 7,
     "name": "Happy Death Day",
     "release_year": 2017,
     "duration": 121,
@@ -54,6 +61,13 @@
     "release_year": 2006,
     "duration": 151,
     "genre": ["Crime", "Drama", "Thriller"]
+  },
+  {
+    "id": 10,
+    "name": "Gladiator",
+    "release_year": 2000,
+    "duration": 155,
+    "genre": ["Action", "Adventure", "Drama"]
   },
   {
     "id": 11,
