@@ -4,13 +4,18 @@ const { readFileSync, writeFile } = require("fs");
 
 const movies = JSON.parse(readFileSync("data/movies.json", "utf-8"));
 const app = express();
+router = express.Router();
 const port = 3000;
 
 // app.use(express.static("public"));
 app.use(express.json());
 
-//Get all movies
-app.get("/v1/movies", (req, res) => {
+const timeLine = (req, res, next) => {
+  console.log("Time: ", Date.now());
+  next();
+};
+
+const allMovies = (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -28,32 +33,9 @@ app.get("/v1/movies", (req, res) => {
     console.error(error);
     res.status(500).json({ status: "Error", message: "Internal server error" });
   }
-});
+};
 
-//Get movies by ID
-// app.get("/v1/movies/:id", (req, res) => {
-//   const requestedId = parseInt(req.params.id);
-//   if (isNaN(requestedId)) {
-//     res.status(400).json({ status: "Error", message: `Invalid movie ID.` });
-//     return;
-//   }
-
-//   const movie = movies.find((movie) => movie.id === requestedId);
-//   console.log(movie);
-
-//   if (!movie) {
-//     res.status(404).json({
-//       status: "Error",
-//       message: `Movie with id ${requestedId} not found`,
-//     });
-//     return;
-//   } else {
-//     res.status(200).json({ status: "Successful", data: movie });
-//   }
-// });
-
-//Post new movies
-app.post("/v1/movies", (req, res) => {
+const newMovie = (req, res) => {
   const newId = movies[movies.length - 1].id + 1;
   const newMovie = {
     id: newId,
@@ -78,10 +60,9 @@ app.post("/v1/movies", (req, res) => {
     }
     res.status(200).json({ status: "Succesful", data: newMovie });
   });
-});
+};
 
-//Update Movies
-app.patch("/v1/movies/:id", (req, res) => {
+const updateMovie = (req, res) => {
   const requestedId = parseInt(req.params.id);
   if (isNaN(requestedId)) {
     res.status(400).json({ status: "Error", message: "Invalid movie ID." });
@@ -111,10 +92,9 @@ app.patch("/v1/movies/:id", (req, res) => {
         .json({ status: "Successfully Updated", data: updatedMovie });
     });
   }
-});
+};
 
-//Delete unwanted movies
-app.delete("/v1/movies/:id", (req, res) => {
+const deleteMovie = (req, res) => {
   const requestedId = parseInt(req.params.id);
   if (requestedId === -1) {
     res.status(400).json({ status: "Error", maeesage: "Invalid movie ID." });
@@ -135,10 +115,9 @@ app.delete("/v1/movies/:id", (req, res) => {
     }
     res.status(200).json({ status: 200, data: findMovie });
   });
-});
+};
 
-//Search movies by genre
-app.get("/v1/movies/:movieGenre", (req, res) => {
+const movieGenre = (req, res) => {
   const getMovieGenre = req.params.movieGenre;
   if (getMovieGenre.length === 1) {
     res.status(400).json({
@@ -151,7 +130,18 @@ app.get("/v1/movies/:movieGenre", (req, res) => {
   );
 
   res.send("Tesing api");
-});
+};
+
+router.use(timeLine);
+
+router.get("/", allMovies).post(newMovie);
+
+router.patch("/:id", updateMovie).delete("/:id", deleteMovie);
+
+//Search movies by genre
+app.get("/:movieGenre");
+
+app.use("/v1/movies", router);
 
 app.listen(port, () => {
   console.log(`Server is running on Port: ${port}`);

@@ -3,21 +3,15 @@ import express from "express";
 import {
   getAllMovies,
   getMovie,
-  createMovie,
   updateMovie,
   deleteMovie,
-  getStatus,
-  checkId,
+  createMovie,
 } from "../controler/movieControler";
 
-const movieRouter = express.Router();
+const router = express.Router();
 
-movieRouter.param("id", checkId);
+router.route("/").get(getAllMovies).post(createMovie);
 
-movieRouter.get("/status", getStatus);
+router.route("/:id").get(getMovie).patch(updateMovie).delete(deleteMovie);
 
-movieRouter.route("/").get(getAllMovies).post(createMovie);
-
-movieRouter.route("/:id").get(getMovie).patch(updateMovie).delete(deleteMovie);
-
-export default movieRouter;
+export default router;
