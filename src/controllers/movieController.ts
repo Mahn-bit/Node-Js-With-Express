@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Movie from "../model/movieSchema";
+import Movie from "../models/movieSchema";
 
 const createMovie = async (req: Request, res: Response) => {
   try {
