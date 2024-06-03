@@ -1,4 +1,3 @@
-const date = Date();
-
-
-console.log(date)
+class User {
+  _id: string;
+}

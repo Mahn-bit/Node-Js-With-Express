@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import app from "./index";
 import { connect } from "mongoose";
-
-dotenv.config();
 
 const port: Number | undefined = Number(process.env.PORT);
 const connStr: string | undefined = process.env.CONN_STR;

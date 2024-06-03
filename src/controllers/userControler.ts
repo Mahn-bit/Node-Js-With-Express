@@ -1,63 +1,57 @@
-import { Request, response, Response } from "express";
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import User from "../models/userSchema";
 
-const secretKey = crypto.randomBytes(32).toString("hex");
+import { Request, Response } from "express";
+import User from "../models/userModel";
 
-const createUser = async (req: Request, res: Response) => {
-  const { username, email, password } = req.body;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error(`JWT_SECRET not define. Please set the environment variable`);
+}
+
+const createAccount = async (req: Request, res: Response) => {
+  const { username, email } = req.body;
   try {
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      res
+    const existUser = await User.findOne({ email, username });
+    if (existUser) {
+      return res
         .status(400)
-        .json({ status: "Failed", message: "Username already exist" });
-      process.exit(1);
+        .json({ status: "Failed", message: "User already exist." });
     }
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      res
-        .status(400)
-        .json({ status: "Failed", message: "Email already exist" });
-      process.exit(1);
-    }
-    await User.create(req.body);
+    const user = await User.create(req.body);
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    res.status(201).json({ token });
   } catch (error) {
     if (error instanceof Error) {
-      res.status(500).json({ status: "Failed", message: error.message });
-      process.exit(1);
+      console.log(error.message);
     }
+    res.status(500).json({ status: "Failed", message: "Server error" });
   }
 };
 
 const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ $or: [{ username }, { email }] });
     if (!user) {
-      res
-        .status(401)
-        .json({ status: "Failed", message: "Invalid credentials" });
-      process.exit(1);
+      return res
+        .status(400)
+        .json({ status: "failed", message: "Invalid credentials" });
     }
-    const isMatch = user.comparePassword(password);
-    if (!isMatch) {
-      res
-        .status(401)
+    const isMatched = await user.comparePassword(password);
+    if (!isMatched) {
+      return res
+        .status(400)
         .json({ status: "Failed", message: "Invalid credentials" });
-      process.exit(1);
     }
-    const token = jwt.sign({ id: user._id }, secretKey, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    res.status(200).json({ token });
   } catch (error) {
     if (error instanceof Error) {
-      res.status(500).json({ status: "Failed", message: error.message });
+      console.log(error.message);
     }
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-export { createUser, login };
-
-
-
-
+export { createAccount, login };
